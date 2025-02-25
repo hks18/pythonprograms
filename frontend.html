@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Message Scheduler</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            text-align: center;
+        }
+        input, button {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Schedule WhatsApp Message</h2>
+        <form id="whatsappForm">
+            <input type="text" id="phone" placeholder="Enter Phone Number (+91...)" required>
+            <input type="text" id="message" placeholder="Enter Your Message" required>
+            <input type="number" id="hour" placeholder="Enter Hour (24hr format)" required>
+            <input type="number" id="minute" placeholder="Enter Minute" required>
+            <button type="submit">Send Message</button>
+        </form>
+        <p id="status"></p>
+    </div>
+
+    <script>
+        document.getElementById("whatsappForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const phone = document.getElementById("phone").value;
+            const message = document.getElementById("message").value;
+            const hour = document.getElementById("hour").value;
+            const minute = document.getElementById("minute").value;
+
+            fetch("http://127.0.0.1:5000/send_message", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ phone, message, hour, minute })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("status").innerText = data.message;
+            })
+            .catch(error => {
+                document.getElementById("status").innerText = "Error sending message!";
+            });
+        });
+    </script>
+</body>
+</html>
